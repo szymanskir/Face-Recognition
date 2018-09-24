@@ -24,9 +24,13 @@ endif
 requirements: test_environment
 	conda install --file requirements.txt
 
+## Extract features
+features: data 
+	$(PYTHON_INTERPRETER) src/features/build_features.py data/raw/face_data_train.csv data/raw/face_data_test.csv data/interim/features_train.csv data/interim/features_test.csv 12
+
 ## Make Dataset
-data: requirements src/data/download_dataset.py
-	$(PYTHON_INTERPRETER) src/data/download_dataset.py data/raw
+data: requirements 
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw
 
 ## Delete all compiled Python files
 clean:
