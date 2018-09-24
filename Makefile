@@ -22,12 +22,11 @@ endif
 
 ## Install Python Dependencies
 requirements: test_environment
-	pip install -U pip setuptools wheel
-	pip install -r requirements.txt
+	conda install --file requirements.txt
 
 ## Make Dataset
-data: requirements
-	$(PYTHON_INTERPRETER) src/data/make_dataset.py
+data: requirements src/data/download_dataset.py
+	$(PYTHON_INTERPRETER) src/data/download_dataset.py data/raw
 
 ## Delete all compiled Python files
 clean:
