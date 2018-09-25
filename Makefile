@@ -24,9 +24,15 @@ endif
 requirements: test_environment
 	conda install --file requirements.txt
 
+## Calculate predictions
+predictions: predictions/prediction_knn_model.csv
+
+## Train models
+models: models/knn_model.pkl
+
 ## Extract features
 features: data 
-	$(PYTHON_INTERPRETER) src/features/build_features.py data/raw/face_data_train.csv data/raw/face_data_test.csv data/interim/features_train.csv data/interim/features_test.csv 12
+	$(PYTHON_INTERPRETER) src/features/build_features.py data/raw/face_data_train.csv data/raw/face_data_test.csv data/processed/features_train.csv data/processed/features_test.csv 12
 
 ## Make Dataset
 data: requirements 
@@ -67,7 +73,13 @@ test_environment:
 # PROJECT RULES                                                                 #
 #################################################################################
 
+#### model rules
+models/knn_model.pkl: features src/models/knn_model.py
+	$(PYTHON_INTERPRETER) src/models/knn_model.py data/processed/features_train.csv data/raw/labels_train.csv models/knn_model.pkl 1
 
+#### prediction rules
+predictions/prediction_knn_model.csv: models/knn_model.pkl src/models/predict_model.py
+	$(PYTHON_INTERPRETER) src/models/predict_model.py models/knn_model.pkl data/processed/features_test.csv $@
 
 #################################################################################
 # Self Documenting Commands                                                     #

@@ -22,7 +22,7 @@ def main(output_filepath):
     labels = pd.DataFrame(data=olivetti_faces.target)
 
     logger.info('Splitting dataset into training and testing sets...')
-    train_data, train_labels, test_data, test_labels = train_test_split(
+    train_data, test_data, train_labels, test_labels = train_test_split(
         data, labels, test_size=0.2, random_state=0)
 
     train_data.to_csv(os.path.join(output_filepath, 'face_data_train.csv'), index=False)
