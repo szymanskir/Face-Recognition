@@ -26,11 +26,11 @@ def main(train_faces_filepath,
     """
     logger = logging.getLogger(__name__)
     train_faces = pd.read_csv(train_faces_filepath)
-    train_labels= pd.read_csv(train_labels_filepath)
+    train_labels = pd.read_csv(train_labels_filepath)
     logger.info('Training KNN model...')
     knn_model = create_knn_model(neighbors_count,
                                  train_faces,
-                                 train_labels)
+                                 train_labels.values.ravel())
 
     logger.info(f'Saving KNN model to {output_model_filepath}...')
     joblib.dump(knn_model, output_model_filepath)

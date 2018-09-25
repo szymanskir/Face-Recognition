@@ -5,6 +5,13 @@ import pandas as pd
 from sklearn.decomposition import PCA
 
 
+def create_pca_model(number_of_components, train_faces):
+    pca = PCA(n_components=number_of_components)
+    pca.fit(train_faces)
+
+    return(pca)
+
+
 @click.command()
 @click.argument('input_train_faces', type=click.Path(exists=True))
 @click.argument('input_test_faces', type=click.Path(exists=True))
@@ -25,8 +32,7 @@ def main(input_train_faces,
     train_faces = pd.read_csv(input_train_faces)
     test_faces = pd.read_csv(input_test_faces)
 
-    pca = PCA(n_components=number_of_components)
-    pca.fit(train_faces)
+    pca = create_pca_model(number_of_components, train_faces)
 
     train_features = pd.DataFrame(pca.transform(train_faces))
     test_features = pd.DataFrame(pca.transform(test_faces))

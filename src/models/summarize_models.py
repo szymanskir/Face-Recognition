@@ -2,7 +2,6 @@
 import os
 import click
 import logging
-import numpy as np
 import pandas as pd
 
 from glob import glob

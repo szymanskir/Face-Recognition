@@ -2,10 +2,11 @@
 import click
 import logging
 import os
+import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_olivetti_faces
 from sklearn.model_selection import train_test_split
-
+from skimage import exposure
 
 @click.command()
 @click.argument('output_filepath', type=click.Path())
@@ -18,7 +19,7 @@ def main(output_filepath):
     logger.info('Downloading Olivetti faces...')
     olivetti_faces = fetch_olivetti_faces()
 
-    data = pd.DataFrame(data=olivetti_faces.data)
+    data = pd.DataFrame(data=np.apply_along_axis(exposure.equalize_hist, 1, olivetti_faces.data))
     labels = pd.DataFrame(data=olivetti_faces.target)
 
     logger.info('Splitting dataset into training and testing sets...')

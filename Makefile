@@ -1,11 +1,10 @@
-.PHONY: clean data lint requirements sync_data_to_s3 sync_data_from_s3
+.PHONY: clean data lint requirements
 
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
 
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
 PROJECT_NAME = face-recognition
 PYTHON_INTERPRETER = python3
@@ -16,6 +15,12 @@ else
 HAS_CONDA=True
 endif
 
+RAW_DATA = data/raw/face_data_test.csv  data/raw/face_data_train.csv  data/raw/labels_test.csv  data/raw/labels_train.csv
+FEATURE_DATA = data/processed/features_train.csv data/processed/features_test.csv
+PCA_N_COEFFICIENTS = 39 
+MODELS = models/knn_model.pkl
+PREDICTIONS = predictions/prediction_knn_model.csv
+KNN_N_COEFFICIENT = 1
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
@@ -26,24 +31,27 @@ requirements: test_environment
 
 ## Summarizes all models
 summary: summary.csv
+
 ## Calculate predictions
-predictions: predictions/prediction_knn_model.csv
+predictions: $(PREDICTIONS)
 
 ## Train models
-models: models/knn_model.pkl
+models: $(MODELS)
 
 ## Extract features
-features: data 
-	$(PYTHON_INTERPRETER) src/features/build_features.py data/raw/face_data_train.csv data/raw/face_data_test.csv data/processed/features_train.csv data/processed/features_test.csv 12
+features: $(FEATURE_DATA) 
 
 ## Make Dataset
-data: requirements 
-	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw
+data: $(RAW_DATA)
 
-## Delete all compiled Python files
+## Delete all compiled Python files, Data and models
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
+	find data -name "*" -type f -delete
+	find models -name "*.pkl" -type f -delete
+	find predictions -name "*.csv" -type f -delete
+	rm summary.csv
 
 ## Lint using flake8
 lint:
@@ -75,16 +83,41 @@ test_environment:
 # PROJECT RULES                                                                 #
 #################################################################################
 
+###################################
+#### data rules
+###################################
+data/raw/face_data_test.csv: src/data/make_dataset.py
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw
+
+data/raw/face_data_train.csv: src/data/make_dataset.py
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw
+
+data/raw/labels_train.csv: src/data/make_dataset.py
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw
+
+data/raw/labels_test.csv: src/data/make_dataset.py
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw
+
+###################################
+#### features rules
+###################################
+
+data/processed/features_train.csv: src/features/build_features.py $(RAW_DATA)
+	$(PYTHON_INTERPRETER) $< data/raw/face_data_train.csv data/raw/face_data_test.csv $(FEATURE_DATA) $(PCA_N_COEFFICIENTS) 
+
+data/processed/features_test.csv: src/features/build_features.py $(RAW_DATA)
+	$(PYTHON_INTERPRETER) $< data/raw/face_data_train.csv data/raw/face_data_test.csv $(FEATURE_DATA) $(PCA_N_COEFFICIENTS)
+
 #### model rules
-models/knn_model.pkl: features src/models/knn_model.py
-	$(PYTHON_INTERPRETER) src/models/knn_model.py data/processed/features_train.csv data/raw/labels_train.csv models/knn_model.pkl 1
+models/knn_model.pkl: $(FEATURE_DATA) src/models/knn_model.py
+	$(PYTHON_INTERPRETER) src/models/knn_model.py data/processed/features_train.csv data/raw/labels_train.csv $@ $(KNN_N_COEFFICIENT)
 
 #### prediction rules
 predictions/prediction_knn_model.csv: models/knn_model.pkl src/models/predict_model.py
-	$(PYTHON_INTERPRETER) src/models/predict_model.py models/knn_model.pkl data/processed/features_test.csv $@
+	$(PYTHON_INTERPRETER) src/models/predict_model.py $< data/processed/features_test.csv $@
 
 #### summary rules
-summary.csv: predictions src/models/summarize_models.py
+summary.csv: $(PREDICTIONS) src/models/summarize_models.py
 	$(PYTHON_INTERPRETER) src/models/summarize_models.py predictions/ data/raw/labels_test.csv $@
 
 #################################################################################
