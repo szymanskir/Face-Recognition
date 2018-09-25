@@ -24,6 +24,8 @@ endif
 requirements: test_environment
 	conda install --file requirements.txt
 
+## Summarizes all models
+summary: summary.csv
 ## Calculate predictions
 predictions: predictions/prediction_knn_model.csv
 
@@ -80,6 +82,10 @@ models/knn_model.pkl: features src/models/knn_model.py
 #### prediction rules
 predictions/prediction_knn_model.csv: models/knn_model.pkl src/models/predict_model.py
 	$(PYTHON_INTERPRETER) src/models/predict_model.py models/knn_model.pkl data/processed/features_test.csv $@
+
+#### summary rules
+summary.csv: predictions src/models/summarize_models.py
+	$(PYTHON_INTERPRETER) src/models/summarize_models.py predictions/ data/raw/labels_test.csv $@
 
 #################################################################################
 # Self Documenting Commands                                                     #
