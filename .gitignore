@@ -104,6 +104,10 @@ venv.bak/
 .mypy_cache/
 
 # data
+data/raw/*.csv
+data/external/*.csv
+data/interim/*.csv
+data/processed/*.csv
 predictions/*.csv
 models/*
 summary.csv

@@ -48,7 +48,7 @@ data: $(RAW_DATA)
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
-	find data -name "*.csv" -type f -delete
+	find data -type f -name "*.csv" -delete
 	find models -name "*.pkl" -type f -delete
 	find predictions -name "*.csv" -type f -delete
 	find . -name summary.csv -type f -delete

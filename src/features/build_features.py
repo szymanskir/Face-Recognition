@@ -6,7 +6,7 @@ from sklearn.decomposition import PCA
 
 
 def create_pca_model(number_of_components, train_faces):
-    pca = PCA(n_components=number_of_components)
+    pca = PCA(n_components=number_of_components, random_state=0)
     pca.fit(train_faces)
 
     return(pca)
