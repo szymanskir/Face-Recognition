@@ -17,7 +17,7 @@ endif
 
 RAW_DATA = data/raw/face_data_test.csv  data/raw/face_data_train.csv  data/raw/labels_test.csv  data/raw/labels_train.csv
 FEATURE_DATA = data/processed/features_train.csv data/processed/features_test.csv
-PCA_N_COEFFICIENTS = 39 
+PCA_N_COEFFICIENTS = 40 
 MODELS = models/knn_model.pkl
 PREDICTIONS = predictions/prediction_knn_model.csv
 KNN_N_COEFFICIENT = 1

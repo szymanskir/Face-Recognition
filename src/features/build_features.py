@@ -27,7 +27,7 @@ def main(input_train_faces,
     Extracts features using the PCA decomposition algorithm (eigenfaces)
     """
     logger = logging.getLogger(__name__)
-    logger.info('Extracting features using the PCA algorithm...')
+    logger.info(f'Extracting features using the PCA algorithm(n={number_of_components})...')
 
     train_faces = pd.read_csv(input_train_faces)
     test_faces = pd.read_csv(input_test_faces)
