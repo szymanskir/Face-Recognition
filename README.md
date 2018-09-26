@@ -1,3 +1,5 @@
+![Travis badge](https://travis-ci.com/szymanskir/Face-Recognition.svg?branch=master)
+
 face-recognition
 ==============================
 
