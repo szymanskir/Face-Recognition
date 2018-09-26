@@ -104,6 +104,6 @@ venv.bak/
 .mypy_cache/
 
 # data
-predictions/*
+predictions/*.csv
 models/*
 summary.csv
