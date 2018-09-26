@@ -16,7 +16,7 @@ conda install --file requirements.txt --yes --quiet -c conda-forge
 make summary
 ```
 
-The results are store in the `summary.csv` file. Currently only one classifier was implemented. The current architecture allows the user to implement other models and compare them based on the selected metric.
+The results are stored in the `summary.csv` file. Currently only one classifier was implemented. The current architecture allows the user to implement other models and compare them based on the selected metric.
  
 Method description
 ------------
