@@ -3,7 +3,26 @@
 face-recognition
 ==============================
 
- Face recognition project for 'Human recognition using biometric methods classes'.
+ Face recognition project for 'Human recognition using biometric methods classes' using the AT&T olivetti faces dataset.
+ 
+Reproducibility steps
+------------
+In order to reproduce the analysis just use the following commands
+
+```bash
+make create_environment
+source activate face-recognition
+conda install --file requirements.txt --yes --quiet -c conda-forge
+make summary
+```
+
+The results are store in the `summary.csv` file. Currently only one classifier was implemented. The current architecture allows the user to implement other models and compare them based on the selected metric.
+ 
+Method description
+------------
+The implemented approach uses the eigenfaces algorithm to extract face features and the 1 nearest neighbor classifier for face identification.
+
+Final accuracy score: `0.9375`
 
 Project Organization
 ------------
